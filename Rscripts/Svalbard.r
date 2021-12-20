@@ -1,6 +1,3 @@
-# R script used for Svalbard dataset 
-
-
 
 dm.path <- './Dm'
 comparative.path <- './Comparative'
@@ -182,11 +179,7 @@ loadTaxa <- function(x, tform=FALSE){
         return(taxa)
     }
 }
-#############################
 
-####################################
-# Find best model -- not used
-###################################
 findbest <- function(community, method){
     if (method=='rda') {
         intercept <- rda(community ~ 1, data=metadata.r.s)
@@ -398,8 +391,7 @@ rdaplotter <- function(x,sc=2) {
 # kmer nmds
 #####################################
 kmernmds <- function(k=11){
-  # Run dbrda on kmer 11 o 13 distance matrices. Prints
-  # latex formatted results
+  # Run dbrda on kmer 11 o 13 distance matrices
   dm <- load.fulldms(k)
   set.seed(1)
   js.nmds <- metaMDS(dm$js, try=99, trymax = 999, autotransform = F)
@@ -753,10 +745,6 @@ createKEGGtable <- function(){
   return(g)
 }
 
-#######################################
-# Alpha diversity
-######################################
-
 plotalpha <- function(alph, feature) {
   g <- ggplot(data = metaalpha, aes(y=.data[[alph]], x=.data[[feature]]))
   g <- g + geom_point()
@@ -1013,7 +1001,7 @@ rankings <- function(k=11){
     '\\begin{table}[hb]',
     '\\centering',
     '\\caption{Ranking of importance of environental variables using
-    RDA and NMDS based on kmer counts and alignment based methods}',
+    RDA and NMDS based on kmer counts and reference based methods}',
     '\\label{tab:rankings}'
   )
   bord <- '\\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c |}'
@@ -1071,27 +1059,51 @@ unknown <- function(x) {
   return(df)
 }
 
-compareDiversities <- function(){
-  # Calculates correlation of various diversity measures
-  # for 
-  set.seed(1)
-  toCompare <- list('bray', 'gower', 'jaccard', 'kulczynski',
-                    'raup', 'cao')
-  kmerDist <- load.fulldms()$js
-  g <- loadTaxa('g')
-  g <- clean(g)
-  g <- g[, colSums(g)>0]
-  d <- loadTaxa('d')
-  d <- clean(d)
-  d <- d[, colSums(d)>0]
-  dms <- list()
-  GenBray <- vegdist(g, method = 'bray')
-  DomBray <- vegdist(d, method = 'bray')
-  for (i in 2:length(toCompare)){
-    mantelResults <- mantel(GenBray, vegdist(g, method = toCompare[i]))
-    print(paste('Bray Curtis ', toCompare[i], mantelResults$statistic, sep = ' '))
-  }
-  mantelResults <- mantel(GenBray, DomBray)
-  print(paste('Genus Bray Curtis ', 'Domain Bray Currtis', mantelResults$statistic, sep = ' '))
-  return(dms)
-}
+# compareDiversities <- function(){
+#   # Calculates correlation of various diversity measures
+#   set.seed(1)
+#   toCompare <- list('bray', 'gower', 'jaccard', 'kulczynski',
+#                     'raup', 'cao')
+#   kmerDist <- load.fulldms()$js
+#   g <- loadTaxa('g')
+#   g <- clean(g)
+#   g <- g[, colSums(g)>0]
+#   d <- loadTaxa('d')
+#   d <- clean(d)
+#   d <- d[, colSums(d)>0]
+#   dms <- list()
+#   GenBray <- vegdist(g, method = 'bray')
+#   DomBray <- vegdist(d, method = 'bray')
+#   for (i in 2:length(toCompare)){
+#     mantelResults <- mantel(GenBray, vegdist(g, method = toCompare[i]))
+#     print(paste('Bray Curtis ', toCompare[i], mantelResults$statistic, sep = ' '))
+#   }
+#   mantelResults <- mantel(GenBray, DomBray)
+#   print(paste('Genus Bray Curtis ', 'Domain Bray Currtis', mantelResults$statistic, sep = ' '))
+#   return(dms)
+# }
+# 
+
+###########################################
+#  RUNtime
+###########################################
+#kmernmds() # Create table for kmer based NMDS
+
+#origdbrdatable() # Create table for kmer based dbRDA analysis
+
+#createKEGGtable() # Create table for KEGG orthology analysis
+
+#createKOGtable() # Create table for analysis based on taxonomy
+
+#pairsplotpialou() # Create plot of alpha diversity comparisons
+
+#mantelproctabel() # Create table for Mantel test and Procrustes test kmer/KEGG
+
+# taxvsk() # Create table for Mantel procruste kmer/taxonomy
+
+#multipl() # Create plot RDA, taxonomy based
+
+#plotnmds()  # Create plot NMDS kmer and orthology based
+
+#rankings() # Create table of environmental variable rankings for diiferent
+          #methods
